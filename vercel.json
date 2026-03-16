@@ -2,10 +2,6 @@
     "version": 2,
     "builds": [
         {
-            "src": "promptwire-claude-toolkit.html",
-            "use": "@vercel/static"
-        },
-        {
             "src": "promptwire-claude-skills.html",
             "use": "@vercel/static"
         },
@@ -20,12 +16,8 @@
             "dest": "/subscribe.js"
         },
         {
-            "src": "/claude-skills",
-            "dest": "/promptwire-claude-skills.html"
-        },
-        {
             "src": "/(.*)",
-            "dest": "/promptwire-claude-toolkit.html"
+            "dest": "/promptwire-claude-skills.html"
         }
     ]
 }
