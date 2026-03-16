@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Your First Claude Skill in 10 Minutes — Free Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,700;1,800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #1292eb;
+            --blue-dim: rgba(18,146,235,0.1);
+            --blue-glow: rgba(18,146,235,0.25);
+            --blue-hover: #0d7fd4;
+            --white: #ffffff;
+            --gray-50: #f8f9fa;
+            --gray-100: #f1f3f5;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #adb5bd;
+            --gray-500: #6c757d;
+            --gray-700: #343a40;
+            --gray-900: #0d1117;
+            --green: #10b981;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--white);
+            color: var(--gray-900);
+            overflow-x: hidden;
+        }
+
+        /* ---- HERO ---- */
+        .hero {
+            background: linear-gradient(135deg, #171717 0%, #1292eb 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 72px 40px 80px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+            background-size: 44px 44px;
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -20%; right: -5%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            max-width: 1080px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 64px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(16,185,129,0.35);
+            background: rgba(16,185,129,0.1);
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 100px;
+            margin-bottom: 28px;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            animation: fadeUp 0.5s ease both;
+        }
+
+        .live-dot {
+            width: 7px; height: 7px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            flex-shrink: 0;
+        }
+
+        .hero-headline {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: clamp(48px, 8vw, 96px);
+            font-weight: 800;
+            line-height: 0.95;
+            letter-spacing: -1px;
+            margin-bottom: 28px;
+            animation: fadeUp 0.5s ease 0.08s both;
+        }
+
+        .hero-headline .line-dim { color: rgba(255,255,255,0.25); display: block; }
+        .hero-headline .line-blue { color: white; display: block; }
+        .hero-headline .line-accent { color: rgba(255,255,255,0.55); display: block; font-style: italic; }
+
+        .hero-desc {
+            font-size: 16px;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.75;
+            margin-bottom: 28px;
+            max-width: 480px;
+            animation: fadeUp 0.5s ease 0.14s both;
+        }
+
+        .checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            animation: fadeUp 0.5s ease 0.2s both;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.65);
+            line-height: 1.45;
+        }
+
+        .ci-icon {
+            width: 18px; height: 18px;
+            background: rgba(18,146,235,0.25);
+            border: 1px solid rgba(18,146,235,0.4);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            color: #7dc8f7;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* ---- FORM PANEL ---- */
+        .form-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+            animation: fadeUp 0.5s ease 0.15s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--blue), #38bdf8);
+        }
+
+        .form-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.2);
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 100px;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-panel h3 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 6px;
+            color: var(--gray-900);
+        }
+
+        .form-panel-sub {
+            font-size: 13px;
+            color: var(--gray-500);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            color: var(--gray-900);
+            outline: none;
+            transition: border-color 0.2s;
+            margin-bottom: 10px;
+            background: var(--white);
+        }
+
+        .form-input:focus { border-color: var(--blue); }
+        .form-input.error { border-color: #dc2626; }
+
+        .form-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.2px;
+        }
+
+        .form-btn:hover {
+            background: var(--blue-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px var(--blue-glow);
+        }
+
+        .form-trust {
+            margin-top: 10px;
+            font-size: 11px;
+            color: var(--gray-400);
+            text-align: center;
+        }
+
+        /* ---- BODY SECTIONS ---- */
+        .body-wrap { background: var(--white); }
+
+        .section {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 72px 40px;
+        }
+
+        .section-eyebrow {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--blue);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: clamp(30px, 4vw, 48px);
+            font-weight: 800;
+            line-height: 1.05;
+            color: var(--gray-900);
+            margin-bottom: 12px;
+        }
+
+        .section-sub {
+            font-size: 15px;
+            color: var(--gray-500);
+            line-height: 1.7;
+            max-width: 560px;
+            margin-bottom: 48px;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        /* alt section bg */
+        .section-alt { background: var(--gray-50); }
+
+        /* ---- PROMPTS ---- */
+        .prompts-stack { display: flex; flex-direction: column; }
+
+        .prompt-row {
+            display: grid;
+            grid-template-columns: 72px 1fr;
+            gap: 28px;
+            padding: 32px 0;
+            border-bottom: 1px solid var(--gray-200);
+            align-items: start;
+            transition: all 0.2s;
+        }
+
+        .prompt-row:last-child { border-bottom: none; }
+        .prompt-row:hover .prompt-num-large { color: var(--blue); }
+        .prompt-row:hover { background: transparent; }
+
+        .prompt-num-large {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 64px;
+            font-weight: 800;
+            color: var(--gray-200);
+            line-height: 1;
+            transition: color 0.2s;
+            text-align: right;
+            padding-top: 4px;
+        }
+
+        .prompt-tag {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--blue);
+            background: var(--blue-dim);
+            padding: 3px 10px;
+            border-radius: 100px;
+            margin-bottom: 8px;
+        }
+
+        .prompt-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+            line-height: 1.1;
+        }
+
+        .prompt-desc {
+            font-size: 14px;
+            color: var(--gray-500);
+            line-height: 1.65;
+            max-width: 600px;
+        }
+
+        /* ---- STEPS ---- */
+        .steps-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .step {
+            background: var(--white);
+            border: 1.5px solid var(--gray-200);
+            border-radius: 14px;
+            padding: 24px;
+            transition: all 0.2s;
+        }
+
+        .step:hover {
+            border-color: var(--blue);
+            box-shadow: 0 4px 20px var(--blue-dim);
+            transform: translateY(-2px);
+        }
+
+        .step-num {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 40px;
+            font-weight: 800;
+            color: var(--blue-dim);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .step:hover .step-num { color: rgba(18,146,235,0.25); }
+
+        .step h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 6px;
+        }
+
+        .step p {
+            font-size: 13px;
+            color: var(--gray-500);
+            line-height: 1.6;
+        }
+
+        /* ---- TESTIMONIALS ---- */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .testimonial {
+            background: var(--white);
+            border: 1.5px solid var(--gray-200);
+            border-radius: 14px;
+            padding: 22px;
+            transition: all 0.2s;
+        }
+
+        .testimonial:hover {
+            border-color: var(--blue);
+            box-shadow: 0 4px 20px var(--blue-dim);
+        }
+
+        .testimonial-stars {
+            color: var(--blue);
+            font-size: 12px;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+
+        .testimonial-text {
+            font-size: 14px;
+            color: var(--gray-700);
+            line-height: 1.7;
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+
+        .testimonial-author { display: flex; align-items: center; gap: 10px; }
+
+        .author-avatar {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .av-a { background: #dbeafe; color: #1d4ed8; }
+        .av-b { background: #d1fae5; color: #065f46; }
+        .av-c { background: #fce7f3; color: #9d174d; }
+
+        .author-name { font-size: 13px; font-weight: 600; color: var(--gray-900); }
+        .author-role { font-size: 12px; color: var(--gray-400); }
+
+        /* ---- BOTTOM CTA ---- */
+        .bottom-cta {
+            background: linear-gradient(135deg, #171717 0%, #1292eb 100%);
+            padding: 80px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bottom-cta::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+            background-size: 44px 44px;
+        }
+
+        .bottom-inner {
+            max-width: 520px;
+            margin: 0 auto;
+            position: relative; z-index: 1;
+        }
+
+        .big-line {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: clamp(36px, 6vw, 72px);
+            font-weight: 800;
+            line-height: 0.95;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .big-line em { font-style: italic; color: rgba(255,255,255,0.5); }
+
+        .bottom-cta p {
+            font-size: 15px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .bottom-form {
+            display: flex;
+            gap: 10px;
+            max-width: 420px;
+            margin: 0 auto 12px;
+        }
+
+        .bottom-input {
+            flex: 1;
+            padding: 13px 16px;
+            border: 1.5px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .bottom-input::placeholder { color: rgba(255,255,255,0.3); }
+        .bottom-input:focus { border-color: rgba(255,255,255,0.35); }
+
+        .bottom-btn {
+            padding: 13px 22px;
+            background: white;
+            color: var(--gray-900);
+            border: none;
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .bottom-btn:hover { background: var(--gray-100); transform: translateY(-1px); }
+
+        .bottom-trust { font-size: 12px; color: rgba(255,255,255,0.25); }
+
+        /* ---- ANIMATIONS ---- */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 900px) {
+            .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+            .form-panel { max-width: 480px; }
+            .steps-row { grid-template-columns: 1fr 1fr; }
+            .testimonials-grid { grid-template-columns: 1fr; }
+            .prompt-row { grid-template-columns: 48px 1fr; gap: 16px; }
+            .prompt-num-large { font-size: 44px; }
+        }
+
+        @media (max-width: 560px) {
+            .hero { padding: 56px 24px 64px; }
+            .section { padding: 56px 24px; }
+            .steps-row { grid-template-columns: 1fr; }
+            .bottom-form { flex-direction: column; }
+            .bottom-btn { width: 100%; }
+            .bottom-cta { padding: 64px 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-inner">
+            <div>
+                <div class="live-badge">
+                    <span class="live-dot"></span>
+                    Free guide — instant access
+                </div>
+
+                <h1 class="hero-headline">
+                    <span class="line-dim">Stop retraining</span>
+                    <span class="line-blue">Claude</span>
+                    <span class="line-accent">every session.</span>
+                </h1>
+
+                <p class="hero-desc">A Claude Skill is a set of instructions you save once inside your account. From that point Claude already knows your format, tone, and standards — without you typing them again. This free guide shows you how to build your first one in 10 minutes. No code, no files.</p>
+
+                <div class="checklist">
+                    <div class="checklist-item"><span class="ci-icon">✓</span>What a Skill is and exactly how it works inside Claude</div>
+                    <div class="checklist-item"><span class="ci-icon">✓</span>The 3 components every working Skill needs</div>
+                    <div class="checklist-item"><span class="ci-icon">✓</span>Prompt to figure out which task to build first</div>
+                    <div class="checklist-item"><span class="ci-icon">✓</span>Prompt to generate your complete Skill — ready to paste in</div>
+                    <div class="checklist-item"><span class="ci-icon">✓</span>Prompt to diagnose and fix a Skill that isn't firing</div>
+                    <div class="checklist-item"><span class="ci-icon">✓</span>4-step deployment — no terminal, no code, just settings</div>
+                    <div class="checklist-item"><span class="ci-icon">✓</span>Bonus: keep context across sessions automatically</div>
+                </div>
+            </div>
+
+            <div class="form-panel">
+                <div class="form-eyebrow">✓ Free instant access</div>
+                <h3>Get the Free Claude Skills Guide</h3>
+                <p class="form-panel-sub">In your inbox in under 2 minutes. Plus weekly AI workflows free every Monday.</p>
+                <div id="formWrap">
+                    <input type="email" class="form-input" id="heroEmail" placeholder="your@email.com">
+                    <button class="form-btn" id="heroBtn" onclick="subscribe('hero')">Send Me the Guide →</button>
+                    <p class="form-trust">✓ Free forever · No spam · Unsubscribe anytime</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BODY -->
+    <div class="body-wrap">
+
+        <!-- PROMPTS -->
+        <div class="section">
+            <div class="section-eyebrow">📁 What's inside</div>
+            <h2 class="section-title">Three prompts.<br>Zero repeated instructions.</h2>
+            <p class="section-sub">You don't write the Skill yourself. You answer questions and Claude builds it. Here's what each prompt does.</p>
+
+            <div class="prompts-stack">
+                <div class="prompt-row">
+                    <div class="prompt-num-large">01</div>
+                    <div>
+                        <span class="prompt-tag">Figure out what to build</span>
+                        <h3 class="prompt-title">The Skill Readiness Interview</h3>
+                        <p class="prompt-desc">Describe your three most repeated tasks. Claude scores each one on frequency, instruction specificity, and output consistency — then ranks them and tells you which to build first and exactly how much time you'd save per week.</p>
+                    </div>
+                </div>
+                <div class="prompt-row">
+                    <div class="prompt-num-large">02</div>
+                    <div>
+                        <span class="prompt-tag">Build the full Skill</span>
+                        <h3 class="prompt-title">The Skill Generator</h3>
+                        <p class="prompt-desc">Answer six questions about your task. Claude generates a complete ready-to-upload Skill file — trigger description, step-by-step workflow, output format, edge cases, and real examples. Paste straight into your settings. Done.</p>
+                    </div>
+                </div>
+                <div class="prompt-row">
+                    <div class="prompt-num-large">03</div>
+                    <div>
+                        <span class="prompt-tag">Fix what's broken</span>
+                        <h3 class="prompt-title">The Skill Debugger</h3>
+                        <p class="prompt-desc">Skill not firing? Firing on the wrong request? Wrong output? Paste your Skill, describe what happened versus what you expected. This prompt diagnoses the exact failure type, gives you the corrected section, and suggests a test to confirm the fix worked.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- STEPS -->
+        <div class="section section-alt" style="background:var(--gray-50);">
+            <div class="section-eyebrow">🚀 Deployment</div>
+            <h2 class="section-title">Four steps. No code. No files.</h2>
+            <p class="section-sub">Everything happens inside Claude's settings page. No terminal, no developer, nothing outside your browser.</p>
+
+            <div class="steps-row">
+                <div class="step">
+                    <div class="step-num">01</div>
+                    <h4>Enable code execution</h4>
+                    <p>Settings → Capabilities → turn on Code execution and file creation. Skills need this to run.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num">02</div>
+                    <h4>Open the Skills page</h4>
+                    <p>Customize → Skills inside your Claude account. This is where all your Skills live.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num">03</div>
+                    <h4>Paste your Skill in</h4>
+                    <p>Click Create a new Skill, hit the + icon, paste the output from Prompt 2 directly. No file needed.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num">04</div>
+                    <h4>Test it</h4>
+                    <p>Open a new conversation, type one of your trigger phrases. Claude picks it up automatically.</p>
+                </div>
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- TESTIMONIALS -->
+        <div class="section">
+            <div class="section-eyebrow">💬 From subscribers</div>
+            <h2 class="section-title">What changes when Claude finally knows how you work.</h2>
+            <p class="section-sub">Real feedback from people who built their first Skill and stopped re-explaining themselves.</p>
+
+            <div class="testimonials-grid">
+                <div class="testimonial">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"I built a Skill for writing client emails in my tone. I used to spend 10 minutes explaining my voice every session. Now I just describe what the email needs and it comes out sounding exactly like me. First try, every time."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar av-a">S</div>
+                        <div><div class="author-name">Sarah P.</div><div class="author-role">Freelance consultant</div></div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"The meeting notes Skill saves me 20 minutes a day. Paste raw notes in, get back exactly the format my team uses. Built it in one conversation using Prompt 2. Haven't touched it since."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar av-b">J</div>
+                        <div><div class="author-name">James R.</div><div class="author-role">Operations lead</div></div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"I had no idea you could save instructions permanently inside Claude. Once I understood that I built three Skills in an afternoon. It genuinely feels like a different tool now."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar av-c">E</div>
+                        <div><div class="author-name">Elena M.</div><div class="author-role">Founder, DTC brand</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BOTTOM CTA -->
+    <section class="bottom-cta">
+        <div class="bottom-inner">
+            <h2 class="big-line">Build it once.<br><em>Never type it again.</em></h2>
+            <p>Free guide. Three prompts. Your first Skill live in 10 minutes.</p>
+            <div class="bottom-form">
+                <input type="email" class="bottom-input" id="bottomEmail" placeholder="your@email.com">
+                <button class="bottom-btn" id="bottomBtn" onclick="subscribe('bottom')">Get the Guide →</button>
+            </div>
+            <p class="bottom-trust">Free instant access. Unsubscribe anytime from your account settings.</p>
+        </div>
+    </section>
+
+<script>
+const API_URL = '/api/subscribe';
+const AUTOMATION_ID = 'aut_81ee4c98-19ae-4855-a88e-3769e76fb563';
+
+async function subscribe(source) {
+    const emailId = source === 'hero' ? 'heroEmail' : 'bottomEmail';
+    const btnId = source === 'hero' ? 'heroBtn' : 'bottomBtn';
+    const email = document.getElementById(emailId).value.trim();
+    const input = document.getElementById(emailId);
+    const btn = document.getElementById(btnId);
+
+    if (!email || !email.includes('@')) {
+        input.classList.add('error');
+        setTimeout(() => input.classList.remove('error'), 1500);
+        return;
+    }
+
+    btn.textContent = 'Sending...';
+    btn.style.opacity = '0.7';
+    btn.disabled = true;
+
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, automation_id: AUTOMATION_ID })
+        });
+    } catch(e) { console.error(e); }
+
+    window.top.location.href = 'https://www.promptwireai.com/recommendations';
+}
+
+document.getElementById('heroEmail').addEventListener('keypress', e => { if (e.key === 'Enter') subscribe('hero'); });
+document.getElementById('bottomEmail').addEventListener('keypress', e => { if (e.key === 'Enter') subscribe('bottom'); });
+</script>
+
+</body>
+</html>
