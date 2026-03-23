@@ -1,85 +1,88 @@
+import crypto from 'crypto';
+
 export default async function handler(req, res) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') return res.status(200).end();
+    if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-
-  const { email, automation_id } = req.body;
-
-  if (!email || !email.includes('@')) {
-    return res.status(400).json({ error: 'Valid email required' });
-  }
-
-  const PUBLICATION_ID = process.env.BEEHIIV_PUBLICATION_ID;
-  const API_KEY = process.env.BEEHIIV_API_KEY;
-  const AUTOMATION_ID = automation_id || process.env.BEEHIIV_AUTOMATION_ID;
-
-  try {
-
-    // STEP 1 — Create the subscription
-    const subResponse = await fetch(
-      `https://api.beehiiv.com/v2/publications/${PUBLICATION_ID}/subscriptions`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${API_KEY}`
-        },
-        body: JSON.stringify({
-          email: email,
-          reactivate_existing: true,
-          send_welcome_email: false
-        })
-      }
-    );
-
-    const subData = await subResponse.json();
-
-    console.log('Sub status:', subResponse.status);
-    console.log('Sub response:', JSON.stringify(subData));
-
-    if (!subResponse.ok) {
-      console.error('Beehiiv subscription error:', subData);
-      return res.status(500).json({ error: 'Subscription failed' });
+    const { email, automation_id } = req.body;
+    if (!email || !email.includes('@')) {
+        return res.status(400).json({ error: 'Valid email required' });
     }
 
-    // STEP 2 — Enrol in the automation journey
-    const journeyResponse = await fetch(
-      `https://api.beehiiv.com/v2/publications/${PUBLICATION_ID}/automations/${AUTOMATION_ID}/journeys`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${API_KEY}`
-        },
-        body: JSON.stringify({
-          email: email,
-          double_opt_override: 'off'
-        })
-      }
-    );
+    const PUBLICATION_ID = process.env.BEEHIIV_PUBLICATION_ID;
+    const API_KEY = process.env.BEEHIIV_API_KEY;
+    const AUTOMATION_ID = automation_id || process.env.BEEHIIV_AUTOMATION_ID;
+    const FB_PIXEL_ID = process.env.FACEBOOK_PIXEL_ID;
+    const FB_ACCESS_TOKEN = process.env.FACEBOOK_ACCESS_TOKEN;
 
-    const journeyData = await journeyResponse.json();
+    const eventId = crypto.randomUUID();
+    const hashedEmail = crypto.createHash('sha256').update(email.toLowerCase().trim()).digest('hex');
 
-    // Log everything so we can debug
-    console.log('Journey status:', journeyResponse.status);
-    console.log('Journey response:', JSON.stringify(journeyData));
+    try {
+        // STEP 1 — Create subscription
+        const subResponse = await fetch(
+            `https://api.beehiiv.com/v2/publications/${PUBLICATION_ID}/subscriptions`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+                body: JSON.stringify({ email, reactivate_existing: true, send_welcome_email: false })
+            }
+        );
+        const subData = await subResponse.json();
+        if (!subResponse.ok) {
+            console.error('Beehiiv subscription error:', subData);
+            return res.status(500).json({ error: 'Subscription failed' });
+        }
 
-    if (!journeyResponse.ok) {
-      const alreadyEnrolled = journeyData?.errors?.[0]?.code?.includes('ALREADY_ENROLLED');
-      if (!alreadyEnrolled) {
-        console.error('Beehiiv journey error:', journeyData);
-      }
-      return res.status(200).json({ success: true });
+        // STEP 2 — Enrol in automation journey
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        const journeyResponse = await fetch(
+            `https://api.beehiiv.com/v2/publications/${PUBLICATION_ID}/automations/${AUTOMATION_ID}/journeys`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+                body: JSON.stringify({ email, double_opt_override: 'off' })
+            }
+        );
+        const journeyData = await journeyResponse.json();
+        if (!journeyResponse.ok) {
+            const alreadyEnrolled = journeyData?.errors?.[0]?.code?.includes('ALREADY_ENROLLED');
+            if (!alreadyEnrolled) console.error('Beehiiv journey error:', journeyData);
+        }
+
+        // STEP 3 — Fire Lead_ClaudeSkills to Facebook CAPI
+        if (FB_PIXEL_ID && FB_ACCESS_TOKEN) {
+            try {
+                const fbResponse = await fetch(
+                    `https://graph.facebook.com/v19.0/${FB_PIXEL_ID}/events?access_token=${FB_ACCESS_TOKEN}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            data: [{
+                                event_name: 'Lead_ClaudeSkills',
+                                event_time: Math.floor(Date.now() / 1000),
+                                event_id: eventId,
+                                action_source: 'website',
+                                user_data: { em: [hashedEmail] }
+                            }]
+                        })
+                    }
+                );
+                const fbData = await fbResponse.json();
+                if (!fbResponse.ok) console.error('Facebook CAPI error:', fbData);
+                else console.log('Facebook CAPI Lead_ClaudeSkills fired:', fbData);
+            } catch (fbErr) {
+                console.error('Facebook CAPI exception:', fbErr);
+            }
+        }
+
+        return res.status(200).json({ success: true, event_id: eventId });
+    } catch (err) {
+        console.error('Server error:', err);
+        return res.status(500).json({ error: 'Server error' });
     }
-
-    return res.status(200).json({ success: true });
-
-  } catch (err) {
-    console.error('Server error:', err);
-    return res.status(500).json({ error: 'Server error' });
-  }
 }
