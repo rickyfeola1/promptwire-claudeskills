@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Build Your First Claude Skill in 10 Minutes — Free Guide</title>
+    <title>Connect Claude to Your Apps — Free Guide</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,700;1,800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -75,9 +75,9 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            border: 1px solid rgba(16,185,129,0.35);
-            background: rgba(16,185,129,0.1);
-            color: var(--green);
+            border: 1px solid rgba(18,146,235,0.35);
+            background: rgba(18,146,235,0.12);
+            color: rgba(255,255,255,0.85);
             font-size: 11px;
             font-weight: 700;
             padding: 6px 14px;
@@ -90,7 +90,7 @@
 
         .live-dot {
             width: 7px; height: 7px;
-            background: var(--green);
+            background: var(--blue);
             border-radius: 50%;
             animation: pulse 2s infinite;
             flex-shrink: 0;
@@ -172,9 +172,9 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(16,185,129,0.1);
-            border: 1px solid rgba(16,185,129,0.2);
-            color: var(--green);
+            background: var(--blue-dim);
+            border: 1px solid rgba(18,146,235,0.2);
+            color: var(--blue);
             font-size: 11px;
             font-weight: 700;
             padding: 4px 12px;
@@ -245,7 +245,7 @@
             text-align: center;
         }
 
-        /* ---- BODY SECTIONS ---- */
+        /* ---- BODY ---- */
         .body-wrap { background: var(--white); }
 
         .section {
@@ -280,15 +280,9 @@
             margin-bottom: 48px;
         }
 
-        .divider {
-            border: none;
-            border-top: 1px solid var(--gray-200);
-        }
+        .divider { border: none; border-top: 1px solid var(--gray-200); }
 
-        /* alt section bg */
-        .section-alt { background: var(--gray-50); }
-
-        /* ---- PROMPTS ---- */
+        /* ---- SCENARIOS ---- */
         .prompts-stack { display: flex; flex-direction: column; }
 
         .prompt-row {
@@ -303,7 +297,6 @@
 
         .prompt-row:last-child { border-bottom: none; }
         .prompt-row:hover .prompt-num-large { color: var(--blue); }
-        .prompt-row:hover { background: transparent; }
 
         .prompt-num-large {
             font-family: 'Barlow Condensed', sans-serif;
@@ -345,6 +338,22 @@
             max-width: 600px;
         }
 
+        .prompt-meta {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .prompt-chip {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray-500);
+            background: var(--gray-100);
+            padding: 3px 10px;
+            border-radius: 100px;
+        }
+
         /* ---- STEPS ---- */
         .steps-row {
             display: grid;
@@ -375,19 +384,43 @@
             margin-bottom: 10px;
         }
 
-        .step:hover .step-num { color: rgba(18,146,235,0.25); }
+        .step h4 { font-size: 14px; font-weight: 600; color: var(--gray-900); margin-bottom: 6px; }
+        .step p { font-size: 13px; color: var(--gray-500); line-height: 1.6; }
 
-        .step h4 {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--gray-900);
-            margin-bottom: 6px;
+        /* ---- CONNECTORS GRID ---- */
+        .connectors-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
         }
 
-        .step p {
+        .connector-group {
+            background: var(--white);
+            border: 1.5px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 18px 16px;
+            transition: all 0.2s;
+        }
+
+        .connector-group:hover {
+            border-color: rgba(18,146,235,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px var(--blue-dim);
+        }
+
+        .connector-group-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--blue);
+            margin-bottom: 8px;
+        }
+
+        .connector-list {
             font-size: 13px;
             color: var(--gray-500);
-            line-height: 1.6;
+            line-height: 1.8;
         }
 
         /* ---- TESTIMONIALS ---- */
@@ -410,31 +443,15 @@
             box-shadow: 0 4px 20px var(--blue-dim);
         }
 
-        .testimonial-stars {
-            color: var(--blue);
-            font-size: 12px;
-            margin-bottom: 12px;
-            letter-spacing: 2px;
-        }
-
-        .testimonial-text {
-            font-size: 14px;
-            color: var(--gray-700);
-            line-height: 1.7;
-            margin-bottom: 16px;
-            font-style: italic;
-        }
-
+        .testimonial-stars { color: var(--blue); font-size: 12px; margin-bottom: 12px; letter-spacing: 2px; }
+        .testimonial-text { font-size: 14px; color: var(--gray-700); line-height: 1.7; margin-bottom: 16px; font-style: italic; }
         .testimonial-author { display: flex; align-items: center; gap: 10px; }
 
         .author-avatar {
             width: 32px; height: 32px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700;
             flex-shrink: 0;
         }
 
@@ -480,19 +497,9 @@
 
         .big-line em { font-style: italic; color: rgba(255,255,255,0.5); }
 
-        .bottom-cta p {
-            font-size: 15px;
-            color: rgba(255,255,255,0.5);
-            margin-bottom: 32px;
-            line-height: 1.6;
-        }
+        .bottom-cta p { font-size: 15px; color: rgba(255,255,255,0.5); margin-bottom: 32px; line-height: 1.6; }
 
-        .bottom-form {
-            display: flex;
-            gap: 10px;
-            max-width: 420px;
-            margin: 0 auto 12px;
-        }
+        .bottom-form { display: flex; gap: 10px; max-width: 420px; margin: 0 auto 12px; }
 
         .bottom-input {
             flex: 1;
@@ -529,10 +536,7 @@
         .bottom-trust { font-size: 12px; color: rgba(255,255,255,0.25); }
 
         /* ---- ANIMATIONS ---- */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(14px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         /* ---- RESPONSIVE ---- */
@@ -543,6 +547,7 @@
             .testimonials-grid { grid-template-columns: 1fr; }
             .prompt-row { grid-template-columns: 48px 1fr; gap: 16px; }
             .prompt-num-large { font-size: 44px; }
+            .connectors-grid { grid-template-columns: 1fr 1fr; }
         }
 
         @media (max-width: 560px) {
@@ -552,6 +557,7 @@
             .bottom-form { flex-direction: column; }
             .bottom-btn { width: 100%; }
             .bottom-cta { padding: 64px 24px; }
+            .connectors-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -567,28 +573,28 @@
                 </div>
 
                 <h1 class="hero-headline">
-                    <span class="line-dim">Stop retraining</span>
-                    <span class="line-blue">Claude</span>
-                    <span class="line-accent">every session.</span>
+                    <span class="line-dim">Claude connects</span>
+                    <span class="line-blue">directly</span>
+                    <span class="line-accent">to your apps.</span>
                 </h1>
 
-                <p class="hero-desc">A Claude Skill is a set of instructions you save once inside your account. From that point Claude already knows your format, tone, and standards — without you typing them again. This free guide shows you how to build your first one in 10 minutes. No code, no files.</p>
+                <p class="hero-desc">Claude connects directly to Gmail, Notion, Slack, Stripe, HubSpot, Canva, and 50+ tools you already use. This free guide shows you how to set it up in two minutes and gives you the exact prompts to run ten real workflows across your connected apps today.</p>
 
                 <div class="checklist">
-                    <div class="checklist-item"><span class="ci-icon">✓</span>What a Skill is and exactly how it works inside Claude</div>
-                    <div class="checklist-item"><span class="ci-icon">✓</span>The 3 components every working Skill needs</div>
-                    <div class="checklist-item"><span class="ci-icon">✓</span>Prompt to figure out which task to build first</div>
-                    <div class="checklist-item"><span class="ci-icon">✓</span>Prompt to generate your complete Skill — ready to paste in</div>
-                    <div class="checklist-item"><span class="ci-icon">✓</span>Prompt to diagnose and fix a Skill that isn't firing</div>
-                    <div class="checklist-item"><span class="ci-icon">✓</span>4-step deployment — no terminal, no code, just settings</div>
-                    <div class="checklist-item"><span class="ci-icon">✓</span>Bonus: keep context across sessions automatically</div>
+                    <div class="checklist-item"><span class="ci-icon">✓</span>How connectors work and what Claude can actually do once connected</div>
+                    <div class="checklist-item"><span class="ci-icon">✓</span>How to connect any app in under two minutes, no code, no setup</div>
+                    <div class="checklist-item"><span class="ci-icon">✓</span>10 real workflow prompts across Gmail, HubSpot, Stripe, Canva, and more</div>
+                    <div class="checklist-item"><span class="ci-icon">✓</span>Monday morning briefing that reads your inbox and calendar automatically</div>
+                    <div class="checklist-item"><span class="ci-icon">✓</span>Inbox processor that drafts replies, archives noise, and flags urgent emails</div>
+                    <div class="checklist-item"><span class="ci-icon">✓</span>Revenue snapshot from Stripe with failed payments and churn flagged</div>
+                    <div class="checklist-item"><span class="ci-icon">✓</span>What Claude can and cannot do inside connected apps</div>
                 </div>
             </div>
 
             <div class="form-panel">
                 <div class="form-eyebrow">✓ Free instant access</div>
-                <h3>Get the Free Claude Skills Guide</h3>
-                <p class="form-panel-sub">In your inbox in under 2 minutes. Plus weekly AI workflows free every Thursday</p>
+                <h3>Get the Free Connectors Guide</h3>
+                <p class="form-panel-sub">In your inbox in under 2 minutes. Plus weekly AI workflows free every Thursday.</p>
                 <div id="formWrap">
                     <input type="email" class="form-input" id="heroEmail" placeholder="your@email.com">
                     <button class="form-btn" id="heroBtn" onclick="subscribe('hero')">Send Me the Guide →</button>
@@ -601,68 +607,152 @@
     <!-- BODY -->
     <div class="body-wrap">
 
-        <!-- PROMPTS -->
+        <!-- WHAT YOU CAN CONNECT -->
         <div class="section">
-            <div class="section-eyebrow">📁 What's inside</div>
-            <h2 class="section-title">Three prompts.<br>Zero repeated instructions.</h2>
-            <p class="section-sub">You don't write the Skill yourself. You answer questions and Claude builds it. Here's what each prompt does.</p>
+            <div class="section-eyebrow">🔌 What you can connect</div>
+            <h2 class="section-title">200+ connectors.<br>Free on top of your existing plan.</h2>
+            <p class="section-sub">Every connector in the directory is free to use. Connect one tool or connect all of them. Takes two minutes per app with no developer required.</p>
 
-            <div class="prompts-stack">
-                <div class="prompt-row">
-                    <div class="prompt-num-large">01</div>
-                    <div>
-                        <span class="prompt-tag">Figure out what to build</span>
-                        <h3 class="prompt-title">The Skill Readiness Interview</h3>
-                        <p class="prompt-desc">Describe your three most repeated tasks. Claude scores each one on frequency, instruction specificity, and output consistency — then ranks them and tells you which to build first and exactly how much time you'd save per week.</p>
-                    </div>
+            <div class="connectors-grid">
+                <div class="connector-group">
+                    <div class="connector-group-label">Communication</div>
+                    <div class="connector-list">Gmail<br>Slack<br>Microsoft Outlook</div>
                 </div>
-                <div class="prompt-row">
-                    <div class="prompt-num-large">02</div>
-                    <div>
-                        <span class="prompt-tag">Build the full Skill</span>
-                        <h3 class="prompt-title">The Skill Generator</h3>
-                        <p class="prompt-desc">Answer six questions about your task. Claude generates a complete ready-to-upload Skill file — trigger description, step-by-step workflow, output format, edge cases, and real examples. Paste straight into your settings. Done.</p>
-                    </div>
+                <div class="connector-group">
+                    <div class="connector-group-label">Documents</div>
+                    <div class="connector-list">Google Drive<br>Notion<br>Microsoft 365</div>
                 </div>
-                <div class="prompt-row">
-                    <div class="prompt-num-large">03</div>
-                    <div>
-                        <span class="prompt-tag">Fix what's broken</span>
-                        <h3 class="prompt-title">The Skill Debugger</h3>
-                        <p class="prompt-desc">Skill not firing? Firing on the wrong request? Wrong output? Paste your Skill, describe what happened versus what you expected. This prompt diagnoses the exact failure type, gives you the corrected section, and suggests a test to confirm the fix worked.</p>
-                    </div>
+                <div class="connector-group">
+                    <div class="connector-group-label">Sales and CRM</div>
+                    <div class="connector-list">HubSpot<br>Salesforce<br>Apollo</div>
+                </div>
+                <div class="connector-group">
+                    <div class="connector-group-label">Projects</div>
+                    <div class="connector-list">Asana<br>ClickUp<br>Jira</div>
+                </div>
+                <div class="connector-group">
+                    <div class="connector-group-label">Design</div>
+                    <div class="connector-list">Canva<br>Figma</div>
+                </div>
+                <div class="connector-group">
+                    <div class="connector-group-label">Payments</div>
+                    <div class="connector-list">Stripe</div>
+                </div>
+                <div class="connector-group">
+                    <div class="connector-group-label">Calendar</div>
+                    <div class="connector-list">Google Calendar</div>
+                </div>
+                <div class="connector-group">
+                    <div class="connector-group-label">Other</div>
+                    <div class="connector-list">WordPress<br>GitHub<br>Amplitude</div>
                 </div>
             </div>
         </div>
 
         <hr class="divider">
 
-        <!-- STEPS -->
-        <div class="section section-alt" style="background:var(--gray-50);">
-            <div class="section-eyebrow">🚀 Deployment</div>
-            <h2 class="section-title">Four steps. No code. No files.</h2>
-            <p class="section-sub">Everything happens inside Claude's settings page. No terminal, no developer, nothing outside your browser.</p>
+        <!-- WORKFLOW SCENARIOS -->
+        <div class="section">
+            <div class="section-eyebrow">⚡ Inside the guide</div>
+            <h2 class="section-title">10 workflows.<br>Ready to run today.</h2>
+            <p class="section-sub">Each workflow has the exact connectors needed and the full prompt to run it. Pick the one that matches the task eating the most of your time and run it today.</p>
 
-            <div class="steps-row">
-                <div class="step">
-                    <div class="step-num">01</div>
-                    <h4>Enable code execution</h4>
-                    <p>Settings → Capabilities → turn on Code execution and file creation. Skills need this to run.</p>
+            <div class="prompts-stack">
+                <div class="prompt-row">
+                    <div class="prompt-num-large">01</div>
+                    <div>
+                        <span class="prompt-tag">Gmail + Google Calendar</span>
+                        <h3 class="prompt-title">Monday Morning Briefing</h3>
+                        <p class="prompt-desc">Claude reads every email since Friday, identifies what needs a reply today, lists your full week of meetings with prep notes, and gives you the three most important things to do first. Takes two minutes to run. Replaces 45 minutes of scattered morning orientation.</p>
+                        <div class="prompt-meta">
+                            <span class="prompt-chip">⏱ 2 min to run</span>
+                            <span class="prompt-chip">Saves 45 min per day</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="step">
-                    <div class="step-num">02</div>
-                    <h4>Open the Skills page</h4>
-                    <p>Customize → Skills inside your Claude account. This is where all your Skills live.</p>
+                <div class="prompt-row">
+                    <div class="prompt-num-large">02</div>
+                    <div>
+                        <span class="prompt-tag">Gmail</span>
+                        <h3 class="prompt-title">Inbox to Zero</h3>
+                        <p class="prompt-desc">Claude processes every unread email. It drafts replies, archives noise, files receipts, and stars anything that needs your action. Nothing is sent or deleted. You review the drafts and approve. Clears 80 emails in the time it used to take to read 10.</p>
+                        <div class="prompt-meta">
+                            <span class="prompt-chip">⏱ 5 min to run</span>
+                            <span class="prompt-chip">Saves 1-2 hrs per session</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="step">
-                    <div class="step-num">03</div>
-                    <h4>Paste your Skill in</h4>
-                    <p>Click Create a new Skill, hit the + icon, paste the output from Prompt 2 directly. No file needed.</p>
+                <div class="prompt-row">
+                    <div class="prompt-num-large">03</div>
+                    <div>
+                        <span class="prompt-tag">HubSpot + Gmail</span>
+                        <h3 class="prompt-title">Pipeline Review</h3>
+                        <p class="prompt-desc">Claude pulls every open deal from HubSpot, flags what has gone cold, cross-references your Gmail for any contact not logged in the CRM, and drafts a follow-up for the highest-priority cold deal. Your full pipeline picture in one pass.</p>
+                        <div class="prompt-meta">
+                            <span class="prompt-chip">⏱ 3 min to run</span>
+                            <span class="prompt-chip">Saves 30-45 min per week</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="step">
-                    <div class="step-num">04</div>
-                    <h4>Test it</h4>
-                    <p>Open a new conversation, type one of your trigger phrases. Claude picks it up automatically.</p>
+                <div class="prompt-row">
+                    <div class="prompt-num-large">04</div>
+                    <div>
+                        <span class="prompt-tag">Stripe</span>
+                        <h3 class="prompt-title">Revenue Snapshot</h3>
+                        <p class="prompt-desc">Claude pulls your Stripe data and produces a one-page financial summary: revenue this month, comparison to last month, failed payments, churn, and top customers. The picture Stripe does not give you conversationally.</p>
+                        <div class="prompt-meta">
+                            <span class="prompt-chip">⏱ 2 min to run</span>
+                            <span class="prompt-chip">Weekly review ready</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="prompt-row">
+                    <div class="prompt-num-large">05</div>
+                    <div>
+                        <span class="prompt-tag">Notion + Canva + WordPress</span>
+                        <h3 class="prompt-title">Content to Published</h3>
+                        <p class="prompt-desc">Claude reads a piece of content from your Notion, edits and tightens it, creates a featured image and social graphic in Canva, writes a LinkedIn post, and drafts the article in WordPress ready to review. One prompt. Three tools. Two hours of work done.</p>
+                        <div class="prompt-meta">
+                            <span class="prompt-chip">⏱ 10 min to run</span>
+                            <span class="prompt-chip">Saves 2+ hrs per piece</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p style="font-size:14px; color:var(--gray-400); margin-top:8px;">Plus 5 more workflows in the guide: Client Call Prep, Weekly Business Review, New Lead Workflow, Meeting Notes Processor, and Project Status Check.</p>
+        </div>
+
+        <hr class="divider">
+
+        <!-- HOW TO SET UP -->
+        <div class="section" style="background:var(--gray-50); max-width:100%; padding-left:0; padding-right:0;">
+            <div style="max-width:1080px; margin:0 auto; padding:72px 40px;">
+                <div class="section-eyebrow">🚀 Setup</div>
+                <h2 class="section-title">Two minutes per tool.<br>No code. No developer.</h2>
+                <p class="section-sub">Everything happens inside Claude. No files, no terminal, no setup beyond clicking Connect.</p>
+
+                <div class="steps-row">
+                    <div class="step">
+                        <div class="step-num">01</div>
+                        <h4>Click the + button</h4>
+                        <p>Open Claude and click the + button in the lower left corner of the chat window.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">02</div>
+                        <h4>Browse connectors</h4>
+                        <p>Click Browse connectors to open the directory. Over 200 tools available, all free.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">03</div>
+                        <h4>Click Connect</h4>
+                        <p>Find the tool you want and click Connect. You will be taken to that app to authorise access.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">04</div>
+                        <h4>Run the prompt</h4>
+                        <p>Come back to Claude and paste in the workflow prompt from the guide. That is it.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -672,32 +762,32 @@
         <!-- TESTIMONIALS -->
         <div class="section">
             <div class="section-eyebrow">💬 From subscribers</div>
-            <h2 class="section-title">What changes when Claude finally knows how you work.</h2>
-            <p class="section-sub">Real feedback from people who built their first Skill and stopped re-explaining themselves.</p>
+            <h2 class="section-title">What changes when Claude works inside your actual tools.</h2>
+            <p class="section-sub">Real feedback from people who connected their apps and stopped switching tabs.</p>
 
             <div class="testimonials-grid">
                 <div class="testimonial">
                     <div class="testimonial-stars">★★★★★</div>
-                    <p class="testimonial-text">"I built a Skill for writing client emails in my tone. I used to spend 10 minutes explaining my voice every session. Now I just describe what the email needs and it comes out sounding exactly like me. First try, every time."</p>
+                    <p class="testimonial-text">"I ran the Monday briefing on my first try. It read 40 emails, pulled my full week of meetings, and told me what to do first. I was at my desk working in 5 minutes instead of 45. That alone was worth it."</p>
                     <div class="testimonial-author">
                         <div class="author-avatar av-a">S</div>
-                        <div><div class="author-name">Sarah P.</div><div class="author-role">Freelance consultant</div></div>
+                        <div><div class="author-name">Sarah P.</div><div class="author-role">Marketing Manager</div></div>
                     </div>
                 </div>
                 <div class="testimonial">
                     <div class="testimonial-stars">★★★★★</div>
-                    <p class="testimonial-text">"The meeting notes Skill saves me 20 minutes a day. Paste raw notes in, get back exactly the format my team uses. Built it in one conversation using Prompt 2. Haven't touched it since."</p>
+                    <p class="testimonial-text">"The pipeline review prompt found three deals I had forgotten about. One of them closed the following week. I just had not logged the last email exchange in HubSpot and Claude caught it."</p>
                     <div class="testimonial-author">
                         <div class="author-avatar av-b">J</div>
-                        <div><div class="author-name">James R.</div><div class="author-role">Operations lead</div></div>
+                        <div><div class="author-name">James R.</div><div class="author-role">Consultant</div></div>
                     </div>
                 </div>
                 <div class="testimonial">
                     <div class="testimonial-stars">★★★★★</div>
-                    <p class="testimonial-text">"I had no idea you could save instructions permanently inside Claude. Once I understood that I built three Skills in an afternoon. It genuinely feels like a different tool now."</p>
+                    <p class="testimonial-text">"I had no idea Claude could work inside my actual apps. Once I connected Gmail and Notion I completely changed how I work. It is not a chatbot anymore. It is just part of how I operate."</p>
                     <div class="testimonial-author">
                         <div class="author-avatar av-c">E</div>
-                        <div><div class="author-name">Elena M.</div><div class="author-role">Founder, DTC brand</div></div>
+                        <div><div class="author-name">Elena M.</div><div class="author-role">DTC Founder</div></div>
                     </div>
                 </div>
             </div>
@@ -708,8 +798,8 @@
     <!-- BOTTOM CTA -->
     <section class="bottom-cta">
         <div class="bottom-inner">
-            <h2 class="big-line">Build it once.<br><em>Never type it again.</em></h2>
-            <p>Free guide. Three prompts. Your first Skill live in 10 minutes.</p>
+            <h2 class="big-line">Connect once.<br><em>Work differently.</em></h2>
+            <p>Free guide. 10 workflows. Two minutes to set up your first connector.</p>
             <div class="bottom-form">
                 <input type="email" class="bottom-input" id="bottomEmail" placeholder="your@email.com">
                 <button class="bottom-btn" id="bottomBtn" onclick="subscribe('bottom')">Get the Guide →</button>
