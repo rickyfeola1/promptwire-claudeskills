@@ -840,7 +840,7 @@ async function subscribe(source) {
         if (data.event_id) eventId = data.event_id;
     } catch(e) { console.error(e); }
 
-    const eid = eventId ? '?eid=' + eventId + '&src=claude_skills' : '?src=claude_skills';
+    const eid = eventId ? '?eid=' + eventId + '&src=claude_connectors' : '?src=claude_connectors';
     window.top.location.href = 'https://www.promptwireai.com/recommendations' + eid;
 }
 
